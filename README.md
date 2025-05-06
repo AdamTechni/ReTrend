@@ -102,6 +102,3 @@
 
 ---
 
-## Autorzy i licencja
-
-Projekt stworzony do celów edukacyjnych lub jako szkielet komercyjny. Licencja i autorzy zostaną określeni w wersji końcowej.
