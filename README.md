@@ -1,104 +1,102 @@
 # ReTrend
+# Backend platformy C2C do sprzedaży i wymiany ubrań (inspirowany Vinted)
 
-# ReTrend - Backend aplikacji C2C do sprzedaży i wymiany ubrań
+"""
+Projekt: ReTrend
+Opis: Backend uproszczonej platformy C2C umożliwiającej użytkownikom sprzedaż i wymianę używanej odzieży oraz akcesoriów.
+Technologie: Python, FastAPI, SQLAlchemy, PostgreSQL, WebSocket, Docker
+"""
 
-## 1. Czym jest projekt?
+# ------------------------------
+# 1. Opis projektu
+# ------------------------------
 
-**ReTrend** to backend dla uproszczonej platformy C2C inspirowanej Vinted, umożliwiającej użytkownikom sprzedaż i wymianę używanej odzieży oraz akcesoriów.
+# Główne funkcjonalności:
+# - Zarządzanie użytkownikami: rejestracja, logowanie (JWT), edycja profilu
+# - Wystawianie przedmiotów: ogłoszenia z opisem, zdjęciami (URL), ceną, kategorią, rozmiarem, stanem
+# - Przeglądanie: listowanie, filtrowanie, wyszukiwanie
+# - Proces zakupu: tworzenie transakcji, zmiana statusu przedmiotu
+# - Czat (WebSocket): komunikacja w czasie rzeczywistym między użytkownikami
+# - Cel: działający szkielet backendu platformy typu marketplace
 
-### Główne funkcjonalności:
+# ------------------------------
+# 2. Wymagania projektowe
+# ------------------------------
 
-- **Zarządzanie użytkownikami**: rejestracja, logowanie (JWT), zarządzanie profilem.
-- **Wystawianie przedmiotów**: tworzenie ogłoszeń z opisem, zdjęciami (URL), ceną, kategorią, rozmiarem, stanem.
-- **Przeglądanie**: listowanie, filtrowanie, wyszukiwanie.
-- **Proces zakupu**: tworzenie transakcji, zmiana statusu przedmiotu.
-- **Czat (WebSocket)**: komunikacja w czasie rzeczywistym między użytkownikami.
-- **Cel**: działający szkielet backendowy platformy marketplace.
+# Zrealizowane:
+# - Dokumentacja i API (wersja podstawowa)
+# - Autentykacja użytkowników (JWT)
+# - Domeny: User, Item, Order
+# - CRUD dla głównych modeli
+# - Komunikacja przez WebSocket
+# - Dockerfile i opcjonalnie docker-compose.yml
 
----
+# Pominięte lub uproszczone:
+# - Realne płatności
+# - System dostaw
+# - Upload zdjęć (obsługa tylko URL)
+# - Zaawansowane wyszukiwanie
+# - System ocen, panel administratora, powiadomienia
 
-## 2. Wymagania projektowe
+# ------------------------------
+# 3. Jak korzystać z API
+# ------------------------------
 
-### Realizowane:
+# Przykładowy przepływ:
+# 1. Rejestracja:        POST /api/auth/register
+# 2. Logowanie:          POST /api/auth/login  → JWT
+# 3. Autoryzacja:        Nagłówek "Authorization: Bearer <token>"
+# 4. Dodanie przedmiotu: POST /api/items
+# 5. Przeglądanie:       GET /api/items
+# 6. Szczegóły:          GET /api/items/{itemId}
+# 7. Czat:
+#    - Tworzenie:        POST /api/conversations
+#    - WebSocket:        ws://localhost:8000/ws/chat/{conversationId}
+# 8. Zakup:              POST /api/orders
+# 9. Zamówienia:         GET /api/orders/my-buying, /my-selling
 
-- Dokumentacja i API (wstępna wersja).
-- Autentykacja użytkowników (Spring Security + JWT).
-- Domeny: `User`, `Item`, `Order`.
-- CRUD dla głównych modeli.
-- WebSocket do komunikacji.
-- Dockerfile + opcjonalnie `docker-compose.yml`.
+# ------------------------------
+# 4. Kluczowe endpointy (przykłady)
+# ------------------------------
 
-### Pominięte (lub uproszczone):
+# AUTENTYKACJA (/api/auth)
+# - POST /register
+# - POST /login
 
-- Realne płatności.
-- System wysyłki.
-- Upload zdjęć (jedynie URL-e).
-- Zaawansowane wyszukiwanie.
-- System ocen, panel admina, powiadomienia.
+# UŻYTKOWNICY (/api/users)
+# - GET /me
+# - PUT /me
+# - GET /{userId}
 
----
+# PRZEDMIOTY (/api/items)
+# - POST /
+# - GET /
+# - GET /{itemId}
+# - PUT /{itemId}
+# - DELETE /{itemId}
 
-## 3. Jak korzystać z API?
+# ZAMÓWIENIA (/api/orders)
+# - POST /
+# - GET /my-buying
+# - GET /my-selling
+# - GET /{orderId}
+# - PUT /{orderId}/status
 
-### Przykładowy przepływ:
+# CZAT (/api/conversations, /api/messages)
+# - POST /conversations
+# - GET /conversations/my
+# - GET /conversations/{conversationId}/messages
 
-1. **Rejestracja:** `POST /api/auth/register`
-2. **Logowanie:** `POST /api/auth/login` → JWT
-3. **Autoryzacja:** JWT w nagłówku `Authorization: Bearer <token>`
-4. **Dodanie przedmiotu:** `POST /api/items`
-5. **Przeglądanie:** `GET /api/items`
-6. **Szczegóły przedmiotu:** `GET /api/items/{itemId}`
-7. **Czat:**
-   - `POST /api/conversations`
-   - WebSocket: `ws://localhost:8080/ws/chat/{conversationId}`
-8. **Zakup:** `POST /api/orders`
-9. **Zamówienia:** `GET /api/orders/my-buying`, `GET /api/orders/my-selling`
+# WEBSOCKET (/ws)
+# - ws://localhost:8000/ws/chat
+# - Wysyłanie: /app/chat.sendMessage
+# - Subskrypcja: /topic/conversation/{conversationId}
 
----
+# ------------------------------
+# 5. Technologie
+# ------------------------------
 
-## 4. Dokumentacja techniczna (wybrane endpointy)
-
-### Autentykacja (`/api/auth`)
-- `POST /register`
-- `POST /login`
-
-### Użytkownicy (`/api/users`)
-- `GET /me`
-- `PUT /me`
-- `GET /{userId}`
-
-### Przedmioty (`/api/items`)
-- `POST /`
-- `GET /`
-- `GET /{itemId}`
-- `PUT /{itemId}`
-- `DELETE /{itemId}`
-
-### Zamówienia (`/api/orders`)
-- `POST /`
-- `GET /my-buying`
-- `GET /my-selling`
-- `GET /{orderId}`
-- `PUT /{orderId}/status`
-
-### Czat (`/api/conversations`, `/api/messages`)
-- `POST /conversations`
-- `GET /conversations/my`
-- `GET /conversations/{conversationId}/messages`
-
-### WebSocket (`/ws`)
-- `ws://localhost:8080/ws/chat`
-- Wysyłanie: `/app/chat.sendMessage`
-- Subskrypcja: `/topic/conversation/{conversationId}`
-
----
-
-## Technologie:
-
-- **Język**: Java
-- **Frameworki**: Spring Boot, Spring Security, Spring Data JPA, Spring WebSocket
-- **Baza danych**: PostgreSQL
-- **Konteneryzacja**: Docker
-
----
-
+# - Język: Python
+# - Frameworki: FastAPI, SQLAlchemy, Pydantic, WebSockets
+# - Baza danych: PostgreSQL
+# - Konteneryzacja: Docker, Docker Compose
